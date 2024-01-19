@@ -1,0 +1,69 @@
+{
+    "name": "goodixgr",
+    "title": "Goodix GR",
+    "description": "Goodix Technology is committed to offering stable and reliable wireless connectivity solutions, covering Bluetooth Low Energy (Bluetooth LE) and a cellular connectivity technology - Narrowband Internet of Things (NB-IoT). We offer highly integrated product series that boost perfect balance in power consumption and performance, along with a rich set of easy-to-use complementary development tools, and will effectively help you shorten time-to-market.",
+    "homepage": "https://www.goodix.com/en/product/connectivity",
+    "license": "Apache-2.0",
+    "keywords": [
+      "dev-platform",
+      "ARM",
+      "Cortex-M",
+      "Goodix",
+      "GR551x",
+      "BLE"
+    ],
+    "engines": {
+      "platformio": "^5"
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/maxgerhardt/platform-goodixgr.git"
+    },
+    "version": "1.0.0",
+    "frameworks": {
+      "cmsis": {
+        "package": "framework-cmsis-gr551x",
+        "script": "builder/frameworks/cmsis.py",
+        "description": "The ARM Cortex Microcontroller Software Interface Standard (CMSIS) is a vendor-independent hardware abstraction layer for the Cortex-M processor series and specifies debugger interfaces. The CMSIS enables consistent and simple software interfaces to the processor for interface peripherals, real-time operating systems, and middleware. It simplifies software re-use, reducing the learning curve for new microcontroller developers and cutting the time-to-market for devices",
+        "homepage": "https://developer.arm.com/tools-and-software/embedded/cmsis",
+        "title": "CMSIS"
+      }
+    },
+    "packages": {
+      "toolchain-gccarmnoneeabi": {
+        "type": "toolchain",
+        "owner": "platformio",
+        "version": "~1.90201.0",
+        "optionalVersions": [
+          "~1.60301.0",
+          "~1.80201.0",
+          "~1.90201.0",
+          "~1.120301.0"
+        ]
+      },
+      "framework-cmsis-gr551x": {
+        "type": "framework",
+        "optional": true,
+        "owner": "maxgerhardt",
+        "version": "https://github.com/maxgerhardt/pio-framework-cmsis-gr551x.git"
+      },
+      "framework-goodix-gr551x-sdk": {
+        "type": "framework",
+        "optional": true,
+        "owner": "maxgerhardt",
+        "version": "~1.6.1"
+      },
+      "tool-openocd": {
+        "type": "uploader",
+        "optional": true,
+        "owner": "platformio",
+        "version": "~3.1200.0"
+      },
+      "tool-jlink": {
+        "type": "uploader",
+        "optional": true,
+        "owner": "platformio",
+        "version": "^1.78811.0"
+      }
+    }
+  }
