@@ -10,6 +10,7 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         example:
           - "examples/cmsis-blink"
+          - "examples/sdk-blink"
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4

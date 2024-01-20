@@ -27,6 +27,13 @@
         "description": "The ARM Cortex Microcontroller Software Interface Standard (CMSIS) is a vendor-independent hardware abstraction layer for the Cortex-M processor series and specifies debugger interfaces. The CMSIS enables consistent and simple software interfaces to the processor for interface peripherals, real-time operating systems, and middleware. It simplifies software re-use, reducing the learning curve for new microcontroller developers and cutting the time-to-market for devices",
         "homepage": "https://developer.arm.com/tools-and-software/embedded/cmsis",
         "title": "CMSIS"
+      },
+      "gr551x-sdk": {
+        "package": "framework-goodix-gr551x-sdk",
+        "script": "builder/frameworks/gr551x_sdk.py",
+        "description": "GR551x SDK supports full functionality of Bluetooth Low Energy (Bluetooth LE) Stack (Bluetooth 5.1), and provides a complete set of peripheral drivers, as well as various library files",
+        "homepage": "https://www.goodix.com/en/software_tool/gr551x_sdk",
+        "title": "GR551x SDK"
       }
     },
     "packages": {
@@ -51,7 +58,7 @@
         "type": "framework",
         "optional": true,
         "owner": "maxgerhardt",
-        "version": "~1.6.1"
+        "version": "symlink://C:/Users/Max/temp/gr55x/GR551x_SDK_V2.0.1/GR551x_SDK_V2.0.1"
       },
       "tool-openocd": {
         "type": "uploader",

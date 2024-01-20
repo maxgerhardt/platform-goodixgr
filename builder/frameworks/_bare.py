@@ -23,6 +23,8 @@ env = DefaultEnvironment()
 env.Append(
     ASFLAGS=[
         "-mthumb",
+        "-mapcs-frame",
+        "-mthumb-interwork", 
     ],
     ASPPFLAGS=[
         "-x", "assembler-with-cpp",
@@ -33,7 +35,9 @@ env.Append(
         "-ffunction-sections",  # place each function in its own section
         "-fdata-sections",
         "-Wall",
-        "-mthumb"
+        "-mthumb",
+        "-mapcs-frame",
+        "-mthumb-interwork", 
     ],
 
     CXXFLAGS=[
@@ -48,7 +52,9 @@ env.Append(
     LINKFLAGS=[
         "-Os",
         "-Wl,--gc-sections,--relax",
-        "-mthumb"
+        "-mthumb",
+        "-mapcs-frame",
+        "-mthumb-interwork", 
     ],
 
     LIBS=["c", "gcc", "m", "stdc++"]
