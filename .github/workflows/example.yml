@@ -11,6 +11,7 @@ jobs:
         example:
           - "examples/cmsis-blink"
           - "examples/sdk-blink"
+          - "examples/sdk-uart-print"
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
