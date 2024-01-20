@@ -32,7 +32,7 @@ class GoodixgrPlatform(PlatformBase):
         frameworks = variables.get("pioframework", [])
         if "cmsis" in frameworks:
             assert build_mcu, ("Missing MCU field for %s" % board)
-            device_package = "framework-cmsis-" + build_mcu[0:7]
+            device_package = "framework-cmsis-" + build_mcu[0:len("gr551")] + "x"
             if device_package in self.packages:
                 self.packages[device_package]["optional"] = False
 
@@ -107,11 +107,7 @@ class GoodixgrPlatform(PlatformBase):
     def configure_debug_session(self, debug_config):
         if debug_config.speed:
             server_executable = (debug_config.server or {}).get("executable", "").lower()
-            if "openocd" in server_executable:
-                debug_config.server["arguments"].extend(
-                    ["-c", "adapter speed %s" % debug_config.speed]
-                )
-            elif "jlink" in server_executable:
+            if "jlink" in server_executable:
                 debug_config.server["arguments"].extend(
                     ["-speed", debug_config.speed]
                 )
