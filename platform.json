@@ -58,7 +58,7 @@
         "type": "framework",
         "optional": true,
         "owner": "maxgerhardt",
-        "version": "symlink://C:/Users/Max/temp/gr55x/GR551x_SDK_V2.0.1/GR551x_SDK_V2.0.1"
+        "version": "https://github.com/maxgerhardt/pio-framework-goodix-gr551x-sdk.git"
       },
       "tool-openocd": {
         "type": "uploader",
