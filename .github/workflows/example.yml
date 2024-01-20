@@ -12,6 +12,7 @@ jobs:
           - "examples/cmsis-blink"
           - "examples/sdk-blink"
           - "examples/sdk-uart-print"
+          - "examples/sdk-ble-beacon"
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
