@@ -13,6 +13,7 @@ jobs:
           - "examples/sdk-blink"
           - "examples/sdk-uart-print"
           - "examples/sdk-ble-beacon"
+          - "examples/sdk-ble-freertos-template"
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
