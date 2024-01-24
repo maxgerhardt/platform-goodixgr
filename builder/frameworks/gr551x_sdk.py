@@ -187,3 +187,14 @@ for l in builtin_libs:
     if l not in prev_libs:
         prev_libs.append(l)
 platform.config.set(env_section, "lib_deps", prev_libs)
+
+# We somehow cannot prevent the LDF from finding FreeRTOS as a dependency for
+# the app_error library although it's not used everywhere. So we have to
+# manually ignore that if FreeRTOS is not to be used, conveniently detected by
+# a signaling macro.
+cpp_defines = env.Flatten(env.get("CPPDEFINES", []))
+if "ENV_USE_FREERTOS" not in cpp_defines:
+    ignored_libs = platform.config.get(env_section, "lib_ignore", [])
+    if "FreeRTOS" not in ignored_libs:
+        ignored_libs.append("FreeRTOS")
+    platform.config.set(env_section, "lib_ignore", ignored_libs)
