@@ -48,7 +48,7 @@
 #include "app_rtc.h"
 #include "flash_scatter_config.h"
 #include "FreeRTOS.h"
-#include "Semphr.h"
+#include "semphr.h"
 
 /*
  * LOCAL VARIABLE DEFINITIONS
