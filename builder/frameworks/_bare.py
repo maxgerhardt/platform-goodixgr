@@ -72,3 +72,9 @@ if "BOARD" in env:
             "-mcpu=%s" % env.BoardConfig().get("build.cpu")
         ]
     )
+    if env.BoardConfig().get("build.cpu") == "cortex-m4":
+        env.Append(
+            ASFLAGS=(["-mfpu=fpv4-sp-d16", "-mfloat-abi=softfp"]),
+            CCFLAGS=(["-mfpu=fpv4-sp-d16", "-mfloat-abi=softfp"]),
+            LINKFLAGS=(["-mfpu=fpv4-sp-d16", "-mfloat-abi=softfp"]),
+        )
