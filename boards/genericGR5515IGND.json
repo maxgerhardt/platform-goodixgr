@@ -22,11 +22,13 @@
     "upload": {
       "maximum_ram_size": 262144,
       "maximum_size": 1048576,
-      "protocol": "jlink",
+      "protocol": "gprogrammer",
       "protocols": [
+        "gprogrammer",
         "jlink",
         "blackmagic"
-      ]
+      ],
+      "product_type": 0
     },
     "url": "https://www.goodix.com/en/product/connectivity/ble/gr551x",
     "vendor": "Goodix"

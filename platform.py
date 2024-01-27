@@ -17,17 +17,32 @@ import sys
 import subprocess
 
 from platformio.managers.platform import PlatformBase
-
+from platformio import util
 
 IS_WINDOWS = sys.platform.startswith("win")
 
-
 class GoodixgrPlatform(PlatformBase):
+    gprogrammer_pkg = {
+        # Windows
+        "windows_amd64": "https://github.com/maxgerhardt/pio-tool-goodix-gprogrammer.git#windows",
+        "windows_x86": "https://github.com/maxgerhardt/pio-tool-goodix-gprogrammer.git#windows",
+        # No Windows ARM64 or ARM32 builds.
+        # Linux
+        "linux_x86_64": "https://github.com/maxgerhardt/pio-tool-goodix-gprogrammer.git#linux",
+        #"linux_i686": "",
+        #"linux_aarch64": "",
+        #"linux_armv7l": "",
+        #"linux_armv6l": "",
+        # Mac (Intel and ARM)
+        #"darwin_x86_64": "",
+        #"darwin_arm64": ""
+    }
 
     def configure_default_packages(self, variables, targets):
         board = variables.get("board")
         board_config = self.board_config(board)
         build_mcu = variables.get("board_build.mcu", board_config.get("build.mcu", ""))
+        sys_type = util.get_systype()
 
         frameworks = variables.get("pioframework", [])
         if "cmsis" in frameworks:
@@ -49,6 +64,18 @@ class GoodixgrPlatform(PlatformBase):
         jlink_pkgname = "tool-jlink"
         if not any(jlink_conds) and jlink_pkgname in self.packages:
             del self.packages[jlink_pkgname]
+
+        # Activate programmer package if needed, otherwise disable    
+        # This is either the explicitly set upload_protocol or the default upload protocol of the board
+        upload_protocol = variables.get("upload_protocol", board_config.get("upload.protocol", ""))
+        # set the package version if we may be using the uploader due to the upload protocol.
+        # but only if we also have a pacakge for it. Otherwise, don't attempt to install it. 
+        if "gprogrammer" in upload_protocol and sys_type in GoodixgrPlatform.gprogrammer_pkg:
+            self.packages["tool-goodix-gprogrammer"]["version"] = GoodixgrPlatform.gprogrammer_pkg[sys_type] 
+            self.packages["tool-goodix-gprogrammer"]["optional"] = False
+        else:
+            # prevent installation of tool for platforms that don't support it.
+            del self.packages["tool-goodix-gprogrammer"]
 
         return PlatformBase.configure_default_packages(self, variables,
                                                        targets)

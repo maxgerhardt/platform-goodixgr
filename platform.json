@@ -65,6 +65,12 @@
         "optional": true,
         "owner": "platformio",
         "version": "^1.78811.0"
+      },
+      "tool-goodix-gprogrammer": {
+        "type": "uploader",
+        "optional": true,
+        "owner": "maxgerhardt",
+        "version": "filledinlater"
       }
     }
   }

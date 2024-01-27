@@ -22,6 +22,7 @@ from SCons.Script import (ARGUMENTS, COMMAND_LINE_TARGETS, AlwaysBuild,
 
 from platformio.public import list_serial_ports
 
+IS_WINDOWS = sys.platform.startswith("win")
 
 def BeforeUpload(target, source, env):  # pylint: disable=W0613,W0621
     env.AutodetectUploadPort()
@@ -93,6 +94,19 @@ env.Append(
                 "$TARGET"
             ]), "Building $TARGET"),
             suffix=".hex"
+        ),
+        BinToBundleBin=Builder(
+            action=env.VerboseAction(" ".join([
+                "GR5xxx_console" + ".exe" if IS_WINDOWS else "",
+                "generate",
+                "$SOURCES",
+                "$TARGET",
+                "0x01000000", # <flash start address(hex)>
+                str(board.get("upload.maximum_size", 1048576) // 1024), # <flash size>
+                str(board.get("upload.product_type", 0)) # <product type>
+                # ^-- I am sure there is a mapping somewhere from chip name to number, not yet implemented
+            ]), "Building $TARGET"),
+            suffix="_bundle.bin"
         )
     )
 )
@@ -117,15 +131,21 @@ if "nobuild" in COMMAND_LINE_TARGETS:
     target_elf = join("$BUILD_DIR", "${PROGNAME}.elf")
     target_firm = join("$BUILD_DIR", "${PROGNAME}.bin")
     target_hex = join("$BUILD_DIR", "${PROGNAME}.hex")
+    target_bin_bundled = join("$BUILD_DIR", "${PROGNAME}_bundles.bin")
 else:
     target_elf = env.BuildProgram()
     target_firm = env.ElfToBin(join("$BUILD_DIR", "${PROGNAME}"), target_elf)
     target_hex = env.ElfToHex(join("$BUILD_DIR", "${PROGNAME}"), target_elf)
-
+    target_bin_bundled = env.BinToBundleBin(join("$BUILD_DIR", "${PROGNAME}"), target_firm)
     env.Depends(target_firm, "checkprogsize")
 
 AlwaysBuild(env.Alias("nobuild", target_firm))
-target_buildprog = env.Alias("buildprog", (target_firm, target_hex), target_firm)
+# If we have the package, then generated the blunded bin directly on compilation.
+# Might otherwise confuse people on why that binary is only created or updated when using "Upload".
+if "tool-goodix-gprogrammer" in platform.packages:
+    target_buildprog = env.Alias("buildprog", (target_firm, target_hex, target_bin_bundled), target_firm)
+else:
+    target_buildprog = env.Alias("buildprog", (target_firm, target_hex), target_firm)
 
 #
 # Target: Print binary size
@@ -166,6 +186,19 @@ if upload_protocol.startswith("blackmagic"):
         env.VerboseAction(env.AutodetectUploadPort, "Looking for BlackMagic port..."),
         env.VerboseAction("$UPLOADCMD", "Uploading $SOURCE")
     ]
+elif upload_protocol.startswith("gprogrammer"):
+    flash_start = "0x01000000" # <flash start address(hex)>
+    flash_size_kb = str(board.get("upload.maximum_size", 1048576) // 1024) # <flash size>
+    product_type = str(board.get("upload.product_type", 0)) # <product type>
+    env.Replace(
+        UPLOADER="GR5xxx_console" + ".exe" if IS_WINDOWS else "",
+        UPLOADERFLAGS=[
+            "program"
+        ],
+        UPLOADCMD='$UPLOADER $UPLOADERFLAGS "$SOURCE" y ' + flash_start + " " + flash_size_kb + " " + product_type 
+    )
+    upload_source = target_bin_bundled
+    upload_actions = [env.VerboseAction("$UPLOADCMD", "Uploading $SOURCE")]
 
 elif upload_protocol.startswith("jlink"):
 
