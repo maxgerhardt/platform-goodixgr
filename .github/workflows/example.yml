@@ -7,8 +7,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
-        #os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         example:
           - "examples/cmsis-blink"
           - "examples/sdk-blink"
@@ -29,10 +28,6 @@ jobs:
         run: |
           pip install -U https://github.com/platformio/platformio/archive/develop.zip
           pio pkg install --global --platform symlink://.
-          pio pkg install -g -t "https://github.com/maxgerhardt/pio-tool-goodix-gprogrammer.git#linux"
-          ls -la ~/.platformio/packages/tool-goodix-gprogrammer
-          ldd ~/.platformio/packages/tool-goodix-gprogrammer/GR5xxx_console
-          ldd ~/.platformio/packages/tool-goodix-gprogrammer/libjlinkarm.so.6
       - name: Build examples
         run: |
           pio run -d ${{ matrix.example }}
