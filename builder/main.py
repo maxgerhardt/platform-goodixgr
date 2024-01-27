@@ -97,7 +97,7 @@ env.Append(
         ),
         BinToBundleBin=Builder(
             action=env.VerboseAction(" ".join([
-                "GR5xxx_console" + ".exe" if IS_WINDOWS else "",
+                "GR5xxx_console" + (".exe" if IS_WINDOWS else ""),
                 "generate",
                 "$SOURCES",
                 "$TARGET",
@@ -191,7 +191,7 @@ elif upload_protocol.startswith("gprogrammer"):
     flash_size_kb = str(board.get("upload.maximum_size", 1048576) // 1024) # <flash size>
     product_type = str(board.get("upload.product_type", 0)) # <product type>
     env.Replace(
-        UPLOADER="GR5xxx_console" + ".exe" if IS_WINDOWS else "",
+        UPLOADER="GR5xxx_console" + (".exe" if IS_WINDOWS else ""),
         UPLOADERFLAGS=[
             "program"
         ],
