@@ -142,10 +142,10 @@ else:
 AlwaysBuild(env.Alias("nobuild", target_firm))
 # If we have the package, then generated the blunded bin directly on compilation.
 # Might otherwise confuse people on why that binary is only created or updated when using "Upload".
-if "tool-goodix-gprogrammer" in platform.packages:
-    target_buildprog = env.Alias("buildprog", (target_firm, target_hex, target_bin_bundled), target_firm)
-else:
-    target_buildprog = env.Alias("buildprog", (target_firm, target_hex), target_firm)
+#if "tool-goodix-gprogrammer" in platform.packages:
+#    target_buildprog = env.Alias("buildprog", (target_firm, target_hex, target_bin_bundled), target_firm)
+#else:
+target_buildprog = env.Alias("buildprog", (target_firm, target_hex), target_firm)
 
 #
 # Target: Print binary size
@@ -188,6 +188,7 @@ if upload_protocol.startswith("blackmagic"):
     ]
 elif upload_protocol.startswith("gprogrammer"):
     flash_start = "0x01000000" # <flash start address(hex)>
+    flash_cfg_page = "0x01002000"
     flash_size_kb = str(board.get("upload.maximum_size", 1048576) // 1024) # <flash size>
     product_type = str(board.get("upload.product_type", 0)) # <product type>
     env.Replace(
@@ -195,10 +196,22 @@ elif upload_protocol.startswith("gprogrammer"):
         UPLOADERFLAGS=[
             "program"
         ],
-        UPLOADCMD='$UPLOADER $UPLOADERFLAGS "$SOURCE" y ' + flash_start + " " + flash_size_kb + " " + product_type 
+        UPLOADCMD='$UPLOADER $UPLOADERFLAGS "$SOURCE" y ' + flash_start + " " + flash_size_kb + " " + product_type,
+        # Make $ERASECMD available for use later
+        ERASECMD='%s erase %s %s y %s %s %s' % (
+            "GR5xxx_console" + (".exe" if IS_WINDOWS else ""),
+            flash_start, # erase <start address(hex)>
+            flash_cfg_page, # erase <end address(hex)>
+            flash_start, # flash start
+            flash_size_kb, # flash size
+            product_type # product type
+        )
     )
-    upload_source = target_bin_bundled
-    upload_actions = [env.VerboseAction("$UPLOADCMD", "Uploading $SOURCE")]
+    upload_source = target_firm
+    upload_actions = [
+        env.VerboseAction("$ERASECMD", "Erasing config page"),
+        env.VerboseAction("$UPLOADCMD", "Uploading $SOURCE")
+    ]
 
 elif upload_protocol.startswith("jlink"):
 
