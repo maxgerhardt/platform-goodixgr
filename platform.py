@@ -123,7 +123,10 @@ class GoodixgrPlatform(PlatformBase):
                         "executable": ("JLinkGDBServerCL.exe"
                                        if IS_WINDOWS else
                                        "JLinkGDBServer")
-                    }
+                    },
+                    # The Jlink tool cannot directly upload, but this gr51xx_console tool can.
+                    # Set to automatically preload the binary via the regular uploader.
+                    "load_cmds": ["preload"]
                 }
             debug["tools"][link]["onboard"] = link in debug.get("onboard_tools", [])
             debug["tools"][link]["default"] = link in debug.get("default_tools", [])
